@@ -8,14 +8,12 @@ import pandas as pd
 
 n = 1000  # no realizations
 T = 1   # end of time interval
-std = 10     # standard deviation of wiener process, needed?
+std = 1     # standard deviation of wiener process, needed?
 N = 100     # points to simulate
 
 
-def wiener_process(T, N, std=1):
+def wiener_process(T, N, std=1, time=True):
     h = T / N  # time step (equidistant)
-
-    t = [h * i for i in range(N + 1)]  # discretisation time
 
     Z = [np.random.normal(0, std**2) for i in range(N + 1)]  # Vector of normal distributed numbers
 
@@ -27,7 +25,11 @@ def wiener_process(T, N, std=1):
         k = i + 1
         W += [W[k - 1] + np.sqrt(h) * Z[k]]
 
-    return [t, W]
+    if time:
+        t = [h * i for i in range(N + 1)]  # discretisation time
+        return [t, W]
+    else:
+        return W
 
 
 def plot_wiener(T, N, n=10, std=1, mean=True, var=True, plot_all=True):
@@ -36,8 +38,8 @@ def plot_wiener(T, N, n=10, std=1, mean=True, var=True, plot_all=True):
     wien_temp = wiener_process(T, N, std)
     t = wien_temp[0]
     for j in range(n):
-        x_temp = wiener_process(T, N, std)
-        x += [x_temp[1]]
+        x_temp = wiener_process(T, N, std, time=False)
+        x += [x_temp]
 
     s_x = pd.DataFrame(x)
     if plot_all:
@@ -88,17 +90,16 @@ def inverse_transform(n):
     return None
 
 
-X = acceptance_rejection(n)
-fig, ax = plt.subplots()
-temp = ax.hist(X, density=True)
-x = np.linspace(0, 1, 1000)
-f_x = pdf(x)
-ax.plot(x, f_x)
-plt.show()
+# X = acceptance_rejection(n)
+# fig, ax = plt.subplots()
+# temp = ax.hist(X, density=True)
+# x = np.linspace(0, 1, 1000)
+# f_x = pdf(x)
+# ax.plot(x, f_x)
+# plt.show()
 
 
-
-
+# plot_wiener(T, N, n, std)
 # plot_wiener(T, N, n, std, plot_all=False)
 # plot_wiener(T, N, n, std, mean=False, var=False)
 
