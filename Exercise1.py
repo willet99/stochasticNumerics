@@ -1,5 +1,5 @@
 import random
-
+import math
 import numpy as np
 import numpy.linalg as nl
 import scipy as sp
@@ -74,11 +74,11 @@ def pdf(x):
     return f
 
 
-def acceptance_rejection(n):
+def acceptance_rejection(N):
     c = pdf(1)
     i = 0
     x = []
-    while i < n:
+    while i < N+1:
         [U, V] = np.random.uniform(0, 1, 2)
         if U < pdf(V)/c:
             x += [V]
@@ -86,26 +86,53 @@ def acceptance_rejection(n):
     return x
 
 
+def acceptance_rejection_test(N):
+    X = acceptance_rejection(N)
+    fig, ax = plt.subplots()
+    temp = ax.hist(X, density=True)
+    x = np.linspace(0, 1, 1000)
+    f_x = pdf(x)
+    ax.plot(x, f_x)
+    plt.show()
+
+
 def inverse_transform(n):
     return None
 
 
-# X = acceptance_rejection(n)
-# fig, ax = plt.subplots()
-# temp = ax.hist(X, density=True)
-# x = np.linspace(0, 1, 1000)
-# f_x = pdf(x)
-# ax.plot(x, f_x)
-# plt.show()
+def exercise_1(T, N, n, std, plot_real=True, mean_var=False):
+    if not plot_real:
+        plot_wiener(T, N, n, std, plot_all=False)
+    elif not mean_var:
+        plot_wiener(T, N, n, std, mean=False, var=False)
+    else:
+        plot_wiener(T, N, n, std)
 
 
-# plot_wiener(T, N, n, std)
-# plot_wiener(T, N, n, std, plot_all=False)
-# plot_wiener(T, N, n, std, mean=False, var=False)
+def exercise_2(N, n, acc_rej=False, inv_tr=False):
+    t = [1/N * i for i in range(N+1)]  # discretisation "time"
+    fig, ax = plt.subplots()
+    plot_index = np.linspace(0, n, 5)
+    temp = []
+    if acc_rej:
+        for i in range(n):
+            x = acceptance_rejection(N)
+            if math.floor(plot_index[i]) == i:
+                ax.plot(t, x)
+            temp += [x]
+        df_temp = pd.DataFrame(temp)
+        x_mean = df_temp.mean(axis=0)
+        x_var = df_temp.var(axis=0)
+        ax.plot(t, x_mean, linestyle='dashed', label='Mean')
+        ax.plot(t, x_var, linestyle='dotted', label='Variance')
+        plt.show()
+    elif inv_tr:
+        pass
+    else:
+        print('Choose an option!')
 
 
-
-
+exercise_2(N, 5, acc_rej=True)
 
 
 
