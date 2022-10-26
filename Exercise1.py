@@ -1,8 +1,5 @@
-import random
 import math
 import numpy as np
-import numpy.linalg as nl
-import scipy as sp
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -286,7 +283,4 @@ def exercise_2(N, n, plot=True, acc_rej=True, inv_tr=False):
 
 # exercise_1(T, N, n, std, plot=True, plot_real=False, mean_var=True)
 # exercise_2(N, n, acc_rej=True) # plot stuff
-
-
-
 
